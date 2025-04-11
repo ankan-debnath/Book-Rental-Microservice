@@ -23,8 +23,13 @@ class CreateUserResponse(Response):
     pass
 
 class UpdateUserRequest(BaseSchema):
-    name: Optional[str] = Field(min_length=1, max_length=100)
-    email: Optional[EmailStr] = None
+    name: str = Field(min_length=1, max_length=100)
+    email: EmailStr
+
+class UpdateUserPatchRequest(BaseSchema):
+    name: Optional[str] = Field(min_length=1, max_length=100, default=None)
+    email: Optional[EmailStr] = Field(default=None)
+
 
 class GetUserResponse(Response):...
 
