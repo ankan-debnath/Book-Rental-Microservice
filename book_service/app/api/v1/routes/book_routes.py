@@ -5,7 +5,10 @@ from starlette import status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.schemas.books_schema import CreateBookRequest, Response
+from app.schemas.books_schema import (
+    CreateBookRequest,
+    Response
+)
 from app.common.db import get_session
 from app.api.v1 import controllers
 from app.schemas.books_schema import BookSchema
@@ -46,4 +49,19 @@ async def delete_book(
     return Response(
         success=True,
         message="Book deleted successfully"
+    )
+
+
+@router.put("/{book_id}")
+async def update_book(
+        book_id: uuid.UUID,
+        request: CreateBookRequest,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+    updated_book = await controllers.update_book(session, book_id, request)
+
+    return Response(
+        success=True,
+        message="Details updated successfully",
+        data=BookSchema.model_validate(updated_book)
     )

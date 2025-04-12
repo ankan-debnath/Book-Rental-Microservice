@@ -78,3 +78,25 @@ async def delete_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
         raise
 
     return book
+
+async def update_book(db: AsyncSession, book_id: uuid.UUID,
+                      update_details: dict) -> BookModel | None:
+    statement = (
+        update(BookModel)
+        .where(BookModel.book_id == str(book_id))
+        .values(**update_details)
+        .returning(BookModel)
+    )
+
+    try:
+        result = await db.execute(statement)
+        updated_book = result.scalars().first()
+        if not updated_book:
+            return None
+        await db.commit()
+        await db.refresh(updated_book)
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+    return updated_book
