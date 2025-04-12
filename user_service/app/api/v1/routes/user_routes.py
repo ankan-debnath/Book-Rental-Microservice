@@ -3,20 +3,13 @@ import uuid
 from fastapi import APIRouter
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.util import await_fallback
 from starlette.status import HTTP_201_CREATED
-
-from app.models import UserModel
-from app.schemas.base import BaseSchema
 from app.schemas.user import (
     CreateUserRequest,
-    CreateUserResponse,
-    GetUserRequest,
-    GetUserResponse,
     UserSchema,
     UpdateUserRequest,
-    UpdateUserResponse,
     UpdateUserPatchRequest,
+    Response
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -27,10 +20,10 @@ router = APIRouter(prefix="/user")
 async def create_user(
         user: CreateUserRequest,
         session:AsyncSession =  Depends(get_session)
-) -> CreateUserResponse:
+) -> Response:
 
     new_user = await controllers.add_user(session, user)
-    return CreateUserResponse(
+    return Response(
         success=True,
         message="User created successfully",
         data=UserSchema.model_validate(new_user)
@@ -40,10 +33,10 @@ async def create_user(
 async def get_user(
         user_id: uuid.UUID,
         session: AsyncSession = Depends(get_session)
-) -> GetUserResponse:
+) -> Response:
     cur_user = await controllers.get_user(session, user_id)
 
-    return GetUserResponse(
+    return Response(
         success=True,
         message="User fetched successfully.",
         data= UserSchema.model_validate(cur_user)
@@ -55,10 +48,11 @@ async def update_user(
         user_id: uuid.UUID,
         user: UpdateUserRequest,
         session: AsyncSession = Depends(get_session)
-)-> UpdateUserResponse:
+)-> Response:
     updated_user = await controllers.update_user(session, user_id, user)
-
-    return UpdateUserResponse(
+    return Response(
+        success=True,
+        message="User updated successfully",
         data=UserSchema.model_validate(updated_user)
     )
 
@@ -68,15 +62,28 @@ async def update_user_patch(
         user_id: uuid.UUID,
         user: UpdateUserPatchRequest,
         session: AsyncSession = Depends(get_session)
-) -> UpdateUserResponse :
+) -> Response :
 
     updated_user = await controllers.update_user_patch(session, user_id, user)
 
-    return UpdateUserResponse(
+    return Response(
+        success=True,
+        message="User updated successfully",
         data=UserSchema.model_validate(updated_user)
     )
 
 
+@router.delete("/{user_id}")
+async def delete_user(
+        user_id: uuid.UUID,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+    deleted_user = await controllers.delete_user(session, user_id)
+
+    return Response(
+        success=True,
+        message="User deleted successfully"
+    )
 
 
 

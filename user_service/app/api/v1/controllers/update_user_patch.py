@@ -3,20 +3,27 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.exceptions.custom_exceptions import NoDataToUpdateException, UserAlreadyExistsException
+from app.exceptions.custom_exceptions import (
+    NoDataToUpdateException,
+    UserAlreadyExistsException,
+    UserNotFoundException
+)
 from app.models import UserModel
 from app.schemas.user import UpdateUserRequest, UpdateUserPatchRequest
 from app.models import user_model
 
 
-async def update_user_patch(session: AsyncSession, user_id: uuid.UUID, user: UpdateUserPatchRequest) -> UserModel:
-    user: dict = user.model_dump(exclude_unset=True)
-    if not user:
+async def update_user_patch(session: AsyncSession, user_id: uuid.UUID, update_details: UpdateUserPatchRequest) -> UserModel:
+    update_details: dict = update_details.model_dump(exclude_unset=True)
+    if not update_details:
         raise NoDataToUpdateException()
 
     try:
-        updated_user = await user_model.update_user(session, user_id, user)
+        updated_user = await user_model.update_user(session, user_id, update_details)
+        if not updated_user:
+            raise UserNotFoundException(user_id)
+
     except IntegrityError:
-        raise UserAlreadyExistsException(**user)
+        raise UserAlreadyExistsException(**update_details)
 
     return updated_user

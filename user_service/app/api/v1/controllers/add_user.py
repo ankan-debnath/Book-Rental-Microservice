@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from app.exceptions.custom_exceptions import UserAlreadyExistsException
 from app.models.user_model import if_user_exists
-from app.schemas.user import CreateUserRequest, CreateUserResponse
+from app.schemas.user import CreateUserRequest
 from app.models import user_model, UserModel
 
 

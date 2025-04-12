@@ -1,16 +1,18 @@
+import sqlite3
 import uuid
 
 import sqlalchemy.exc
 from sqlalchemy import String
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 
+
 from .base import ORMBase
-from ..schemas.user import CreateUserRequest, GetUserRequest, UpdateUserRequest
+from ..schemas.user import CreateUserRequest, GetUserRequest, UpdateUserRequest, UserSchema
 
 
 class UserModel(ORMBase):
@@ -60,22 +62,51 @@ async def get_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | Non
         raise
     return user
 
-async def update_user(session: AsyncSession, user_id: uuid.UUID,  user:  dict):
+async def update_user(session: AsyncSession, user_id: uuid.UUID,  update_details:  dict):
     statement = (
         update(UserModel)
         .where(UserModel.user_id == str(user_id))
-        .values(**user)
+        .values(**update_details)
         .returning(UserModel)
     )
 
-    updated_user = await session.scalar(statement)
-
     try:
+        result = await session.execute(statement)
+        updated_user = result.scalars().first()
+
+        if not updated_user:
+            return None
+
         await session.commit()
         await session.refresh(updated_user)
-    except IntegrityError:
+
+    except sqlite3.IntegrityError:
+        await session.rollback()
+        raise
+    except sqlite3.OperationalError:
         await session.rollback()
         raise
 
     return updated_user
 
+
+async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
+    statement = (
+        delete(UserModel)
+        .where(UserModel.user_id == str(user_id))
+        .returning(UserModel)
+    )
+
+
+    try:
+        deleted_user = await session.scalar(statement)
+        if not deleted_user:
+            return None
+
+        await session.commit()
+
+    except sqlite3.OperationalError:
+        await session.rollback()
+        raise
+
+    return deleted_user
