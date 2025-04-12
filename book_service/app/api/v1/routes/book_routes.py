@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from starlette import status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
+from app.exceptions.custom_exceptions import NegativeAvailabilityException
 from app.schemas.books_schema import (
     CreateBookRequest,
     UpdateBookRequest,
@@ -80,5 +80,41 @@ async def update_book(
         success=True,
         message="Details updated successfully",
         data=BookSchema.model_validate(updated_book)
+    )
+
+@router.patch("/rent/{copies}/{book_id}")
+async def rent_book(
+        book_id: uuid.UUID,
+        copies:int,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+
+    if copies <= 0:
+        raise NegativeAvailabilityException(book_id)
+
+    result = await controllers.update_book_availability(session, book_id, -copies)
+
+    return Response(
+        success=True,
+        message="Book rented successfully",
+        data=BookSchema.model_validate(result)
+    )
+
+@router.patch("/return/{copies}/{book_id}")
+async def return_book(
+        book_id: uuid.UUID,
+        copies:int,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+
+    if copies <= 0:
+        raise NegativeAvailabilityException(book_id)
+
+    result = await controllers.update_book_availability(session, book_id, copies)
+
+    return Response(
+        success=True,
+        message="Book returned successfully",
+        data=BookSchema.model_validate(result)
     )
 
