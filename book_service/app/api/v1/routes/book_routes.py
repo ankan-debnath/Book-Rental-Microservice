@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.books_schema import (
     CreateBookRequest,
+    UpdateBookRequest,
     Response
 )
 from app.common.db import get_session
@@ -65,3 +66,19 @@ async def update_book(
         message="Details updated successfully",
         data=BookSchema.model_validate(updated_book)
     )
+
+
+@router.patch("/{book_id}")
+async def update_book(
+        book_id: uuid.UUID,
+        request: UpdateBookRequest,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+    updated_book = await controllers.update_book(session, book_id, request)
+
+    return Response(
+        success=True,
+        message="Details updated successfully",
+        data=BookSchema.model_validate(updated_book)
+    )
+
