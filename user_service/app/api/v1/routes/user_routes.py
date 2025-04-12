@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.status import HTTP_201_CREATED
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from app.schemas.user import (
     CreateUserRequest,
     UserSchema,
@@ -73,7 +73,7 @@ async def update_user_patch(
     )
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", status_code=HTTP_204_NO_CONTENT)
 async def delete_user(
         user_id: uuid.UUID,
         session: AsyncSession = Depends(get_session)

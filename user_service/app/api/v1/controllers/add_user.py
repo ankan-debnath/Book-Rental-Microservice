@@ -1,6 +1,5 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from app.exceptions.custom_exceptions import UserAlreadyExistsException
 from app.models.user_model import if_user_exists

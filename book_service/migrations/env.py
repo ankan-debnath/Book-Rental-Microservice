@@ -19,7 +19,7 @@ target_metadata = ORMBase.metadata
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option("sqlalchemy.url", str(settings.DB_URL))
     context.configure(
         url=url,
         target_metadata=target_metadata,
