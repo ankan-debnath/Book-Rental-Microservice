@@ -36,3 +36,14 @@ async def get_book(
         message="Book fetched successfully.",
         data=BookSchema.model_validate(book)
     )
+@router.delete("/{book_id}")
+async def delete_book(
+        book_id: uuid.UUID,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+    book = await controllers.delete_book(session, book_id)
+
+    return Response(
+        success=True,
+        message="Book deleted successfully"
+    )

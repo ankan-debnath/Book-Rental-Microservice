@@ -40,7 +40,6 @@ async def create_book(db: AsyncSession, book_details: dict) -> BookModel:
 
     return user
 
-
 async def get_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
     statement = (
         select(BookModel)
@@ -60,3 +59,22 @@ async def get_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
         raise
 
     return user
+
+async def delete_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
+    statement = (
+        delete(BookModel)
+        .where(BookModel.book_id == str(book_id))
+        .returning(BookModel)
+    )
+
+    try:
+        result = await db.execute(statement)
+        book = result.scalars().first()
+        if not book:
+            return None
+        await db.commit()
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+    return book

@@ -13,4 +13,4 @@ app.add_exception_handler(BookNotFoundException, book_not_found_exception_handle
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.api.main:app", reload=True)
+    uvicorn.run(app, log_level="info")
