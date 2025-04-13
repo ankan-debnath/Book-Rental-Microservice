@@ -43,3 +43,13 @@ class ErrorResponse(BaseModel):
     data: Optional[Any] = None
     error_code: str
 
+class Token(BaseModel):
+    access_token: str
+    grant_type: str
+
+class TokenData(BaseModel):
+    username: EmailStr | None = None
+
+
+
+

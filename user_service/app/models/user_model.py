@@ -171,3 +171,23 @@ async def return_book(db: AsyncSession, user: UserModel, book_id: uuid.UUID, cop
     except sqlite3.OperationalError:
         await db.rollback()
         raise
+
+async def if_user_email_exists(db: AsyncSession, email: str) -> UserModel | None:
+    statement = (
+        select(UserModel)
+        .where(UserModel.email == email)
+    )
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+
+        if not user:
+            return None
+        await db.commit()
+        await db.refresh(user)
+        return user
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+

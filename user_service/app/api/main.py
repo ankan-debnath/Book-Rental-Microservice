@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 from app.api.v1.routes import router
+from app.auth.auth_routes import router as t_router
+
 from app.exceptions.custom_exceptions import (
     UserAlreadyExistsException,
     UserNotFoundException,
@@ -24,6 +26,7 @@ from app.exceptions.handlers import (
 app = FastAPI()
 
 app.include_router(router)
+app.include_router(t_router)
 
 app.add_exception_handler(UserAlreadyExistsException, user_already_exists_exception_handler) # type: ignore
 app.add_exception_handler(UserNotFoundException, user_not_fount_exception_handler) # type: ignore
