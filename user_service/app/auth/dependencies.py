@@ -1,5 +1,3 @@
-import sqlite3
-
 import jwt
 from fastapi import HTTPException
 from fastapi.params import Depends
@@ -10,7 +8,6 @@ from starlette import status
 
 from app.auth.password import verify_access_token
 from app.common.db import get_session
-from app.exceptions.custom_exceptions import UserServiceException
 from app.schemas.user import TokenData
 from app.models import user_model
 
@@ -43,11 +40,8 @@ async def get_current_user(
     except InvalidTokenError:
         raise credentials_exception
 
-    try:
-        user = await user_model.if_user_email_exists(db, str(token_data.username))
+    user = await user_model.if_user_email_exists(db, str(token_data.username))
 
-        if user is None:
-            raise credentials_exception
-        return user
-    except sqlite3.OperationalError:
-        raise UserServiceException("Failed to authenticate")
+    if user is None:
+        raise credentials_exception
+    return user

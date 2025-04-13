@@ -24,12 +24,10 @@ class CreateUserRequest(BaseSchema):
 class UpdateUserRequest(BaseSchema):
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    password: str
 
 class UpdateUserPatchRequest(BaseSchema):
     name: Optional[str] = Field(min_length=1, max_length=100, default=None)
     email: Optional[EmailStr] = Field(default=None)
-    password: Optional[str] = Field(default=None)
 
 
 class GetUserRequest(BaseSchema):

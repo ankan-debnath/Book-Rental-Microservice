@@ -18,10 +18,12 @@ from app.models import user_model
 BOOKS_URI = settings.BOOK_SERVICE_URI
 
 async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies:int):
-    rentals = await user_model.get_user_rentals(db, user_id)
+    user = await user_model.get_user(db, user_id)
+    if not user:
+        raise UserNotFoundException(user_id)
 
     cur_book_rentals = 0
-    for rental in rentals:
+    for rental in user.rentals:
         cur_book_rentals += rental.book_id == str(book_id)
 
     if cur_book_rentals == 0:
@@ -55,7 +57,7 @@ async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, 
         raise BookServiceException(f"Failed to contact book service: {str(e)}")
 
     try:
-        result = await user_model.return_book(db, user_id, book_id, copies)
+        result = await user_model.return_book(db, user, book_id, copies)
         if not result:
             UserServiceException("Failed to return book")
 
@@ -74,3 +76,5 @@ async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, 
             ) from revert_err
 
         raise UserServiceException(f"Failed to update user record: {str(db_err)}")
+
+
