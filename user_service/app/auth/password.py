@@ -3,15 +3,16 @@ from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta, timezone
 
+from app.common.settings import settings
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
 )
 
-SECRET_KEY: str = "super-secret-key"
-ALGORITHM: str = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+SECRET_KEY: str = settings.SECRET_KEY
+ALGORITHM: str = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def verify_password(plain_password, hashed_password):
