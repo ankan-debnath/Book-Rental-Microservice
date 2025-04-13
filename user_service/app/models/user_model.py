@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+from time import sleep
 
 import sqlalchemy.exc
 from sqlalchemy import String
@@ -158,16 +159,22 @@ async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, co
         await db.rollback()
         raise
 
-async def return_book(db: AsyncSession, user: UserModel, book_id: uuid.UUID, copies: int) -> UserModel | None:
-    matching_rentals = [r for r in user.rentals if r.book_id == str(book_id)]
-
+async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies: int) -> bool:
     try:
+        result = await db.execute(
+            select(UserModel)
+            .options(selectinload(UserModel.rentals))
+            .where(UserModel.user_id == str(user_id))
+        )
+        user = result.scalars().first()
+
+        matching_rentals = [r for r in user.rentals if r.book_id == str(book_id)]
         for rental in matching_rentals[:copies]:
             await db.delete(rental)
 
         await db.commit()
-        await db.refresh(user)
-        return user
+
+        return True
     except sqlite3.OperationalError:
         await db.rollback()
         raise
@@ -191,3 +198,17 @@ async def if_user_email_exists(db: AsyncSession, email: str) -> UserModel | None
         await db.rollback()
         raise
 
+async def get_user_rentals(db: AsyncSession, user_id: uuid.UUID) -> List[RentalModel] | None:
+    statement = (
+        select(UserModel)
+        .where(UserModel.user_id == str(user_id))
+    )
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+        if user:
+            return user.rentals
+        return None
+    except sqlite3.OperationalError:
+        raise

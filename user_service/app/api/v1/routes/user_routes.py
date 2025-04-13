@@ -4,6 +4,10 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+
+from app.auth.dependencies import get_current_user
+from app.exceptions.custom_exceptions import CredentialsException
+from app.models import UserModel
 from app.schemas.user import (
     CreateUserRequest,
     UserSchema,
@@ -20,8 +24,13 @@ router = APIRouter(prefix="/user")
 @router.get("/{user_id}")
 async def get_user(
         user_id: uuid.UUID,
+        user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+    if str(user.user_id) != str(user_id):
+        raise CredentialsException(
+            detail={"success" : False, "message": "User is unauthorized"}
+        )
     cur_user = await controllers.get_user(session, user_id)
 
     return Response(
@@ -35,9 +44,16 @@ async def get_user(
 async def update_user(
         user_id: uuid.UUID,
         user: UpdateUserRequest,
+        cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 )-> Response:
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
     updated_user = await controllers.update_user(session, user_id, user)
+
     return Response(
         success=True,
         message="User updated successfully",
@@ -49,8 +65,15 @@ async def update_user(
 async def update_user_patch(
         user_id: uuid.UUID,
         user: UpdateUserPatchRequest,
+        cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response :
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
 
     updated_user = await controllers.update_user_patch(session, user_id, user)
 
@@ -64,8 +87,15 @@ async def update_user_patch(
 @router.delete("/{user_id}")
 async def delete_user(
         user_id: uuid.UUID,
+        cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
     deleted_user = await controllers.delete_user(session, user_id)
 
     return Response(
@@ -78,8 +108,14 @@ async def rent_book(
         user_id: uuid.UUID,
         book_id: uuid.UUID,
         copies: int,
+        cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
 
     result = await controllers.rent_book(session, user_id, book_id, copies)
 
@@ -94,15 +130,21 @@ async def rent_book(
         user_id: uuid.UUID,
         book_id: uuid.UUID,
         copies: int,
+        cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
 
     result = await controllers.return_book(session, user_id, book_id, copies)
 
     return Response(
         success=True,
         message="Book returned successfully",
-        data=UserSchema.model_validate(result)
+        data=UserSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
     )
 
 
