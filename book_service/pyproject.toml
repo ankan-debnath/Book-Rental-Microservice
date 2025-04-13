@@ -1,4 +1,5 @@
 [project]
+
 name = "book-service"
 version = "0.1.0"
 description = "Add your description here"
@@ -12,3 +13,6 @@ dependencies = [
     "pydantic-settings>=2.8.1",
     "sqlalchemy[asyncio]>=2.0.40",
 ]
+
+[tool.setuptools.packages.find]
+include = ["app*", "db*"]

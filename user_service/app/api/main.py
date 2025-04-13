@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.responses import JSONResponse
 
 from app.api.v1.routes import router
 from app.auth.auth_routes import router as t_router
@@ -38,6 +39,16 @@ app.add_exception_handler(InvalidRentalReturnException, invalid_rental_return_ex
 app.add_exception_handler(BookServiceException, book_service_exception_handler) # type: ignore
 
 
+PORT = 5000
+
+@app.get("/")
+def index():
+    return JSONResponse(
+        status_code=200,
+        content=f"Server is running at port {PORT}"
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5000, log_level="info")
+    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="info")

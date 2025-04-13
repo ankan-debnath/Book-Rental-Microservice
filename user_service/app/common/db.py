@@ -1,7 +1,5 @@
-from pydantic import with_config
 from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.testing import assert_warns
 
 from app.common.settings import settings
 
