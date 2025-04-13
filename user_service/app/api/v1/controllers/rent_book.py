@@ -4,12 +4,13 @@ import httpx
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.settings import settings
 from app.exceptions.custom_exceptions import BookNotFoundException, BookNotAvailableException, BookServiceException, \
     UserServiceException
 from app.models import user_model
 
 
-BOOKS_URI = "http://127.0.0.1:8000/v1/books"
+BOOKS_URI = settings.BOOK_SERVICE_URI
 
 async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies:int):
     try:
