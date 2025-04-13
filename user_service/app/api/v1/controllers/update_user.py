@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth.password import get_password_hash
 from app.exceptions.custom_exceptions import (
     NoDataToUpdateException,
     UserAlreadyExistsException,
@@ -15,6 +16,9 @@ from app.models import user_model
 
 async def update_user(session: AsyncSession, user_id: uuid.UUID, update_details: UpdateUserRequest) -> UserModel:
     update_details: dict = update_details.model_dump(exclude_unset=True)
+    if "password" in update_details:
+        update_details["password"] = get_password_hash(update_details["password"])
+
     if not update_details:
         raise NoDataToUpdateException()
 

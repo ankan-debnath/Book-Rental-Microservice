@@ -1,7 +1,8 @@
 import uuid
 
 from app.exceptions.base import CustomException
-from fastapi import status
+from fastapi import status, HTTPException
+
 
 class UserAlreadyExistsException(CustomException):
     error_code: str = "USER_ALREADY_EXISTS"
@@ -60,3 +61,9 @@ class InvalidRentalReturnException(CustomException):
         self.message = message
         self.data = {"book": book_id}
 
+class CredentialsException(HTTPException):
+
+    def __init__(self, detail):
+        self.status_code = status.HTTP_401_UNAUTHORIZED
+        self.detail = detail
+        self.headers = {"WWW-Authenticate": "Bearer"}
