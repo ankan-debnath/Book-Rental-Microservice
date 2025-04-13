@@ -1,10 +1,11 @@
 import sqlite3
 import uuid
-from sqlalchemy import String
+from sqlalchemy import String, CheckConstraint
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.exceptions.custom_exceptions import BookNotFoundException
 from app.models.base import ORMBase
 
 
@@ -20,6 +21,10 @@ class BookModel(ORMBase):
     author: Mapped[str] = mapped_column(nullable=False)
     genre: Mapped[str] = mapped_column(nullable=False)
     available_copies: Mapped[int] = mapped_column(nullable=False, default=0)
+
+    __table_args__ = (
+        CheckConstraint('available_copies >= 0', name='check_price_non_negative'),
+    )
 
 async def create_book(db: AsyncSession, book_details: dict) -> BookModel:
     statement = (
@@ -80,7 +85,7 @@ async def delete_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
     return book
 
 async def update_book(db: AsyncSession, book_id: uuid.UUID,
-                      update_details: dict) -> BookModel | None:
+                      update_details: dict) -> BookModel | int:
     statement = (
         update(BookModel)
         .where(BookModel.book_id == str(book_id))
@@ -92,9 +97,40 @@ async def update_book(db: AsyncSession, book_id: uuid.UUID,
         result = await db.execute(statement)
         updated_book = result.scalars().first()
         if not updated_book:
-            return None
+            return 0
+
+        if updated_book.available_copies < 0:
+            return -1
+
         await db.commit()
         await db.refresh(updated_book)
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+    return updated_book
+
+async def update_availability(db: AsyncSession, book_id: uuid.UUID, copies:int) -> BookModel | int:
+    statement = (
+        update(BookModel)
+        .where(BookModel.book_id == str(book_id))
+        .values(available_copies=BookModel.available_copies + copies)
+        .returning(BookModel)
+    )
+
+    try:
+        result = await db.execute(statement)
+        updated_book = result.scalars().first()
+
+        if not updated_book:
+            return 0
+
+        if updated_book.available_copies < 0:
+            return -1
+
+        await db.commit()
+        await db.refresh(updated_book)
+
     except sqlite3.OperationalError:
         await db.rollback()
         raise

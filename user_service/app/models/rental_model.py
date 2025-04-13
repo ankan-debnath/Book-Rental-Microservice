@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, Integer
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 
@@ -10,15 +10,17 @@ class RentalModel(ORMBase):
     __tablename__ = "rentals"
 
     id: Mapped[str] = mapped_column(
-        String(36),
-        primary_key=True,  # This is crucial
-        default=lambda: str(uuid.uuid4())
+        Integer,
+        autoincrement=True,
+        primary_key=True  # This is crucial
     )
-    user_id: Mapped[int] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
+        String(36),
         ForeignKey("users.user_id", ondelete="CASCADE"),
         nullable=False
     )
-    book_id: Mapped[int] = mapped_column(
+    book_id: Mapped[str] = mapped_column(
+        String(36),
         nullable=False
     )
 

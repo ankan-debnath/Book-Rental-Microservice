@@ -18,24 +18,40 @@ class UserSchema(BaseSchema):
 class CreateUserRequest(BaseSchema):
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
+    password: str
 
 
 class UpdateUserRequest(BaseSchema):
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
+    password: str
 
 class UpdateUserPatchRequest(BaseSchema):
     name: Optional[str] = Field(min_length=1, max_length=100, default=None)
     email: Optional[EmailStr] = Field(default=None)
+    password: Optional[str] = Field(default=None)
 
 
 class GetUserRequest(BaseSchema):
     user_id: uuid.UUID = Field(min_length=36, max_length=36)
 
+class RentalSchema(BaseSchema):
+    user_id: uuid.UUID
+    book_id: uuid.UUID
 
 class ErrorResponse(BaseModel):
     success: bool
     message: str
     data: Optional[Any] = None
     error_code: str
+
+class Token(BaseModel):
+    access_token: str
+    grant_type: str
+
+class TokenData(BaseModel):
+    username: EmailStr | None = None
+
+
+
 

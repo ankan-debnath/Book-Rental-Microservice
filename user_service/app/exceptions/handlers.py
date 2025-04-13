@@ -6,7 +6,9 @@ from starlette import status
 from app.exceptions.custom_exceptions import (
     UserAlreadyExistsException,
     UserNotFoundException,
-    NoDataToUpdateException
+    NoDataToUpdateException,
+    BookNotFoundException, BookNotAvailableException, BookServiceException, UserServiceException,
+    InvalidRentalReturnException
 )
 from app.schemas.user import  ErrorResponse
 
@@ -45,6 +47,82 @@ async def user_not_fount_exception_handler(
 async def no_data_to_update_exception(
         request: Request,
         exc: NoDataToUpdateException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        error_code=exc.error_code,
+        message=exc.message,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
+
+async def book_not_found_exception_handler(
+        request: Request,
+        exc: BookNotFoundException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        message= exc.message,
+        error_code=exc.error_code,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
+
+async def book_not_available_for_rent_handler(
+        request: Request,
+        exc: BookNotAvailableException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        message= exc.message,
+        error_code=exc.error_code,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
+
+
+async def book_service_exception_handler(
+        request: Request,
+        exc: BookServiceException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        message= exc.message,
+        error_code=exc.error_code,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
+
+
+async def user_service_exception_handler(
+        request: Request,
+        exc: UserServiceException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        message= exc.message,
+        error_code=exc.error_code,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
+async def invalid_rental_return_exception_handler(
+        request: Request,
+        exc: InvalidRentalReturnException
 ) -> JSONResponse:
     response = ErrorResponse(
         success=False,

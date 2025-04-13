@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth.password import get_password_hash
 from app.exceptions.custom_exceptions import UserAlreadyExistsException
 from app.models.user_model import if_user_exists
 from app.schemas.user import CreateUserRequest
@@ -14,6 +15,8 @@ async def add_user(
     existing = await if_user_exists(session, user)
     if existing:
         raise UserAlreadyExistsException(email=user.email)
+
+    user.password = get_password_hash(user.password)
 
     try:
         data = await user_model.create_user(session, user)

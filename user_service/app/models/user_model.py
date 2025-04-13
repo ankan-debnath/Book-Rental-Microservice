@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+from time import sleep
 
 import sqlalchemy.exc
 from sqlalchemy import String
@@ -7,11 +8,13 @@ from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from typing import List
 
-
+from .rental_model import RentalModel
 from .base import ORMBase
+from ..common.db import session_maker
+from ..exceptions.custom_exceptions import UserNotFoundException
 from ..schemas.user import CreateUserRequest, GetUserRequest, UpdateUserRequest, UserSchema
 
 
@@ -25,6 +28,7 @@ class UserModel(ORMBase):
     )
     name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
 
     rentals: Mapped[List["RentalModel"]] = relationship(
         back_populates="user",
@@ -52,15 +56,35 @@ async def if_user_exists(session: AsyncSession, user: CreateUserRequest):
 
 async def if_user_id_exists(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
     statement = select(UserModel).where(UserModel.user_id == str(user_id))
+    try:
+        result = await session.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            return None
+        await session.commit()
+        await session.refresh(user)
+        return user
+    except sqlite3.OperationalError:
+        await session.rollback()
+        raise
 
 async def get_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
+    statement = (
+        select(UserModel)
+        .where(UserModel.user_id == str(user_id))
+        .options(selectinload(UserModel.rentals))  # Eager load rentals
+    )
     try:
-        statement = select(UserModel).where(UserModel.user_id == str(user_id))
-        user = await session.scalar(statement)
+        result = await session.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            return None
+        await session.commit()
+        await session.refresh(user)
+        return user
 
     except sqlalchemy.exc.OperationalError:
         raise
-    return user
 
 async def update_user(session: AsyncSession, user_id: uuid.UUID,  update_details:  dict):
     statement = (
@@ -89,7 +113,6 @@ async def update_user(session: AsyncSession, user_id: uuid.UUID,  update_details
 
     return updated_user
 
-
 async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
     statement = (
         delete(UserModel)
@@ -110,3 +133,83 @@ async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | 
         raise
 
     return deleted_user
+
+async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies: int) -> bool:
+    statement = (
+        select(UserModel)
+        .options(selectinload(UserModel.rentals))
+        .where(UserModel.user_id == str(user_id))
+    )
+
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            return False
+
+        for i in range(copies):
+            new_rental = RentalModel(book_id=str(book_id))
+            user.rentals.append(new_rental)
+
+        await db.commit()
+        return True
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies: int) -> bool:
+    try:
+        result = await db.execute(
+            select(UserModel)
+            .options(selectinload(UserModel.rentals))
+            .where(UserModel.user_id == str(user_id))
+        )
+        user = result.scalars().first()
+
+        matching_rentals = [r for r in user.rentals if r.book_id == str(book_id)]
+        for rental in matching_rentals[:copies]:
+            await db.delete(rental)
+
+        await db.commit()
+
+        return True
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+async def if_user_email_exists(db: AsyncSession, email: str) -> UserModel | None:
+    statement = (
+        select(UserModel)
+        .where(UserModel.email == email)
+    )
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+
+        if not user:
+            return None
+        await db.commit()
+        await db.refresh(user)
+        return user
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+async def get_user_rentals(db: AsyncSession, user_id: uuid.UUID) -> List[RentalModel] | None:
+    statement = (
+        select(UserModel)
+        .options(selectinload(UserModel.rentals))
+        .where(UserModel.user_id == str(user_id))
+    )
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+        if user:
+            return user.rentals
+        return None
+    except sqlite3.OperationalError:
+        raise
