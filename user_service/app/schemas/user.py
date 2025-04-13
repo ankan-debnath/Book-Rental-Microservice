@@ -32,6 +32,10 @@ class UpdateUserPatchRequest(BaseSchema):
 class GetUserRequest(BaseSchema):
     user_id: uuid.UUID = Field(min_length=36, max_length=36)
 
+class RentalSchema(BaseSchema):
+    id: int
+    user_id: str
+    book_id: str
 
 class ErrorResponse(BaseModel):
     success: bool

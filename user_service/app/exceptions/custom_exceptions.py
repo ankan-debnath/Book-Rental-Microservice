@@ -26,3 +26,27 @@ class NoDataToUpdateException(CustomException):
     def __init__(self):
         self.message = "No data available to update"
 
+
+class BookNotFoundException(CustomException):
+    error_code: str = "BOOK_NOT_FOUND"
+    status_code: int = status.HTTP_400_BAD_REQUEST
+
+    def __init__(self, book_id: uuid.UUID, **kwargs):
+        self.message = f"No book found with id {book_id}"
+        self.data = {"email": book_id}
+
+class BookNotAvailableException(CustomException):
+    error_code: str = "ENOUGH_COPIES_NOT_AVAILABLE"
+    status_code: int = status.HTTP_409_CONFLICT
+
+    def __init__(self, book_id: uuid.UUID, **kwargs):
+        self.message = f"Book is currently not available for rent"
+        self.data = {"book_id": book_id}
+
+class BookServiceException(CustomException):
+    def __init__(self, message: str):
+        self.message = message
+
+class UserServiceException(CustomException):
+    def __init__(self, message: str):
+        self.message = message

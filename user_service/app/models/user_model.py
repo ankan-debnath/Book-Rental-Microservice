@@ -7,11 +7,13 @@ from sqlalchemy import insert, select, update, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from typing import List
 
-
+from .rental_model import RentalModel
 from .base import ORMBase
+from ..common.db import session_maker
+from ..exceptions.custom_exceptions import UserNotFoundException
 from ..schemas.user import CreateUserRequest, GetUserRequest, UpdateUserRequest, UserSchema
 
 
@@ -52,6 +54,18 @@ async def if_user_exists(session: AsyncSession, user: CreateUserRequest):
 
 async def if_user_id_exists(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
     statement = select(UserModel).where(UserModel.user_id == str(user_id))
+    try:
+        result = await session.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            raise UserNotFoundException(user_id)
+        await session.commit()
+        await session.refresh(user)
+        return user
+    except sqlite3.OperationalError:
+        await session.rollback()
+
+    return None
 
 async def get_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
     try:
@@ -89,7 +103,6 @@ async def update_user(session: AsyncSession, user_id: uuid.UUID,  update_details
 
     return updated_user
 
-
 async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
     statement = (
         delete(UserModel)
@@ -110,3 +123,28 @@ async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | 
         raise
 
     return deleted_user
+
+async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID) -> RentalModel | None:
+    statement = (
+        select(UserModel)
+        .options(selectinload(UserModel.rentals))
+        .where(UserModel.user_id == str(user_id))
+    )
+
+    new_rental = RentalModel(book_id=str(book_id))
+
+    try:
+        result = await db.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            raise UserNotFoundException(user_id)
+
+        user.rentals.append(new_rental)
+
+        await db.commit()
+        await db.refresh(new_rental)
+
+        return new_rental
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise

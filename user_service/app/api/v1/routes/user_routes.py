@@ -9,7 +9,7 @@ from app.schemas.user import (
     UserSchema,
     UpdateUserRequest,
     UpdateUserPatchRequest,
-    Response
+    Response, RentalSchema
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -73,7 +73,7 @@ async def update_user_patch(
     )
 
 
-@router.delete("/{user_id}", status_code=HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}")
 async def delete_user(
         user_id: uuid.UUID,
         session: AsyncSession = Depends(get_session)
@@ -83,6 +83,38 @@ async def delete_user(
     return Response(
         success=True,
         message="User deleted successfully"
+    )
+
+@router.post("/{user_id}/rent/{copies}/{book_id}")
+async def rent_book(
+        user_id: uuid.UUID,
+        book_id: uuid.UUID,
+        copies: int,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+
+    result = await controllers.rent_book(session, user_id, book_id, copies)
+
+    return Response(
+        success=True,
+        message="Book rented successfully",
+        data=RentalSchema.model_validate(result)
+    )
+
+@router.post("/{user_id}/return/{copies}/{book_id}")
+async def rent_book(
+        user_id: uuid.UUID,
+        book_id: uuid.UUID,
+        copies: int,
+        session: AsyncSession = Depends(get_session)
+) -> Response:
+
+    result = await controllers.return_book(session, user_id, book_id, copies)
+
+    return Response(
+        success=True,
+        message="Book rented successfully"
+        # data=
     )
 
 
