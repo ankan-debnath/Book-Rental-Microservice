@@ -58,23 +58,27 @@ async def if_user_id_exists(session: AsyncSession, user_id: uuid.UUID) -> UserMo
         result = await session.execute(statement)
         user = result.scalars().first()
         if not user:
-            raise UserNotFoundException(user_id)
+            return None
         await session.commit()
         await session.refresh(user)
         return user
     except sqlite3.OperationalError:
         await session.rollback()
-
-    return None
+        raise
 
 async def get_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
+    statement = select(UserModel).where(UserModel.user_id == str(user_id))
     try:
-        statement = select(UserModel).where(UserModel.user_id == str(user_id))
-        user = await session.scalar(statement)
+        result = await session.execute(statement)
+        user = result.scalars().first()
+        if not user:
+            return None
+        await session.commit()
+        await session.refresh(user)
+        return user
 
     except sqlalchemy.exc.OperationalError:
         raise
-    return user
 
 async def update_user(session: AsyncSession, user_id: uuid.UUID,  update_details:  dict):
     statement = (
@@ -148,3 +152,7 @@ async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID) ->
     except sqlite3.OperationalError:
         await db.rollback()
         raise
+
+async def get_rental_details(db: AsyncSession, user: UserModel) -> RentalModel | None:
+
+    return user.rentals
