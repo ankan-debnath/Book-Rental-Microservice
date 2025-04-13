@@ -50,3 +50,13 @@ class BookServiceException(CustomException):
 class UserServiceException(CustomException):
     def __init__(self, message: str):
         self.message = message
+
+
+class InvalidRentalReturnException(CustomException):
+    error_code: str = "FAILED_TO_RETURN"
+    status_code: int = status.HTTP_409_CONFLICT
+
+    def __init__(self, book_id: uuid.UUID, message):
+        self.message = message
+        self.data = {"book": book_id}
+

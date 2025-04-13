@@ -67,7 +67,11 @@ async def if_user_id_exists(session: AsyncSession, user_id: uuid.UUID) -> UserMo
         raise
 
 async def get_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | None:
-    statement = select(UserModel).where(UserModel.user_id == str(user_id))
+    statement = (
+        select(UserModel)
+        .where(UserModel.user_id == str(user_id))
+        .options(selectinload(UserModel.rentals))  # Eager load rentals
+    )
     try:
         result = await session.execute(statement)
         user = result.scalars().first()
@@ -128,31 +132,41 @@ async def delete_user(session: AsyncSession, user_id: uuid.UUID) -> UserModel | 
 
     return deleted_user
 
-async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID) -> RentalModel | None:
+async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies: int) -> bool:
     statement = (
         select(UserModel)
         .options(selectinload(UserModel.rentals))
         .where(UserModel.user_id == str(user_id))
     )
 
-    new_rental = RentalModel(book_id=str(book_id))
 
     try:
         result = await db.execute(statement)
         user = result.scalars().first()
         if not user:
-            raise UserNotFoundException(user_id)
+            return False
 
-        user.rentals.append(new_rental)
+        for i in range(copies):
+            new_rental = RentalModel(book_id=str(book_id))
+            user.rentals.append(new_rental)
 
         await db.commit()
-        await db.refresh(new_rental)
+        return True
 
-        return new_rental
     except sqlite3.OperationalError:
         await db.rollback()
         raise
 
-async def get_rental_details(db: AsyncSession, user: UserModel) -> RentalModel | None:
+async def return_book(db: AsyncSession, user: UserModel, book_id: uuid.UUID, copies: int) -> UserModel | None:
+    matching_rentals = [r for r in user.rentals if r.book_id == str(book_id)]
 
-    return user.rentals
+    try:
+        for rental in matching_rentals[:copies]:
+            await db.delete(rental)
+
+        await db.commit()
+        await db.refresh(user)
+        return user
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise

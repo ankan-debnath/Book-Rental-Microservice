@@ -7,7 +7,8 @@ from app.exceptions.custom_exceptions import (
     UserAlreadyExistsException,
     UserNotFoundException,
     NoDataToUpdateException,
-    BookNotFoundException, BookNotAvailableException, BookServiceException, UserServiceException
+    BookNotFoundException, BookNotAvailableException, BookServiceException, UserServiceException,
+    InvalidRentalReturnException
 )
 from app.schemas.user import  ErrorResponse
 
@@ -119,7 +120,20 @@ async def user_service_exception_handler(
         status_code=exc.status_code,
         content=response.model_dump()
     )
-
+async def invalid_rental_return_exception_handler(
+        request: Request,
+        exc: InvalidRentalReturnException
+) -> JSONResponse:
+    response = ErrorResponse(
+        success=False,
+        error_code=exc.error_code,
+        message=exc.message,
+        data=None
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump()
+    )
 
 
 async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:

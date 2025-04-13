@@ -8,7 +8,8 @@ from app.exceptions.custom_exceptions import (
     BookNotFoundException,
     BookNotAvailableException,
     UserServiceException,
-    BookServiceException
+    BookServiceException,
+    InvalidRentalReturnException
 )
 from app.exceptions.handlers import (
     user_already_exists_exception_handler, user_not_fount_exception_handler,
@@ -16,7 +17,8 @@ from app.exceptions.handlers import (
     book_not_found_exception_handler,
     book_not_available_for_rent_handler,
     user_service_exception_handler,
-    book_service_exception_handler
+    book_service_exception_handler,
+    invalid_rental_return_exception_handler
 )
 
 app = FastAPI()
@@ -29,6 +31,9 @@ app.add_exception_handler(NoDataToUpdateException, no_data_to_update_exception) 
 app.add_exception_handler(BookNotFoundException, book_not_found_exception_handler) # type: ignore
 app.add_exception_handler(BookNotAvailableException, book_not_available_for_rent_handler) # type: ignore
 app.add_exception_handler(UserServiceException, user_service_exception_handler) # type: ignore
+app.add_exception_handler(InvalidRentalReturnException, invalid_rental_return_exception_handler) # type: ignore
+app.add_exception_handler(BookServiceException, book_service_exception_handler) # type: ignore
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -14,11 +14,13 @@ class RentalModel(ORMBase):
         autoincrement=True,
         primary_key=True  # This is crucial
     )
-    user_id: Mapped[int] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
+        String(36),
         ForeignKey("users.user_id", ondelete="CASCADE"),
         nullable=False
     )
-    book_id: Mapped[int] = mapped_column(
+    book_id: Mapped[str] = mapped_column(
+        String(36),
         nullable=False
     )
 

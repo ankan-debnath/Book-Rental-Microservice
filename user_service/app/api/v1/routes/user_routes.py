@@ -98,7 +98,7 @@ async def rent_book(
     return Response(
         success=True,
         message="Book rented successfully",
-        data=RentalSchema.model_validate(result)
+        data=RentalSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
     )
 
 @router.post("/{user_id}/return/{copies}/{book_id}")
@@ -113,8 +113,8 @@ async def rent_book(
 
     return Response(
         success=True,
-        message="Book rented successfully"
-        # data=
+        message="Book returned successfully",
+        data=UserSchema.model_validate(result)
     )
 
 
