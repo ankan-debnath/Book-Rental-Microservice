@@ -144,10 +144,8 @@ async def rent_book(
     return Response(
         success=True,
         message="Book returned successfully",
-        data=UserSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
+        data=RentalSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
     )
-
-
 
 
 

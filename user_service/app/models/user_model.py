@@ -201,6 +201,7 @@ async def if_user_email_exists(db: AsyncSession, email: str) -> UserModel | None
 async def get_user_rentals(db: AsyncSession, user_id: uuid.UUID) -> List[RentalModel] | None:
     statement = (
         select(UserModel)
+        .options(selectinload(UserModel.rentals))
         .where(UserModel.user_id == str(user_id))
     )
 
