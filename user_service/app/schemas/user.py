@@ -18,6 +18,7 @@ class UserSchema(BaseSchema):
 class CreateUserRequest(BaseSchema):
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
+    password: str
 
 
 class UpdateUserRequest(BaseSchema):

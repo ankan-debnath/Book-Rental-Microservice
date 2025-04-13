@@ -1,7 +1,6 @@
 import sqlite3
 import uuid
 import httpx
-from pyexpat.errors import messages
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

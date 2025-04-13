@@ -16,18 +16,6 @@ from app.api.v1 import controllers
 
 router = APIRouter(prefix="/user")
 
-@router.post("", status_code=HTTP_201_CREATED)
-async def create_user(
-        user: CreateUserRequest,
-        session:AsyncSession =  Depends(get_session)
-) -> Response:
-
-    new_user = await controllers.add_user(session, user)
-    return Response(
-        success=True,
-        message="User created successfully",
-        data=UserSchema.model_validate(new_user)
-    )
 
 @router.get("/{user_id}")
 async def get_user(

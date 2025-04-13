@@ -27,6 +27,7 @@ class UserModel(ORMBase):
     )
     name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
 
     rentals: Mapped[List["RentalModel"]] = relationship(
         back_populates="user",
