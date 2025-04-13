@@ -6,13 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.settings import settings
 from app.exceptions.custom_exceptions import BookNotFoundException, BookNotAvailableException, BookServiceException, \
-    UserServiceException
+    UserServiceException, CredentialsException
 from app.models import user_model
 
 
 BOOKS_URI = settings.BOOK_SERVICE_URI
 
 async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies:int):
+    if copies <= 0:
+        raise CredentialsException(
+            detail={"success": False, "message": "No. of copies must be positive"}
+        )
     try:
         async with httpx.AsyncClient() as client:
             response = await client.patch(

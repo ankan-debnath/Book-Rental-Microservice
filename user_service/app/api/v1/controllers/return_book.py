@@ -10,7 +10,7 @@ from app.exceptions.custom_exceptions import (
     BookNotAvailableException,
     BookServiceException,
     UserServiceException, UserNotFoundException,
-    InvalidRentalReturnException
+    InvalidRentalReturnException, CredentialsException
 )
 from app.models import user_model
 
@@ -18,6 +18,11 @@ from app.models import user_model
 BOOKS_URI = settings.BOOK_SERVICE_URI
 
 async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, copies:int):
+    if copies <= 0:
+        raise CredentialsException(
+            detail={"success": False, "message": "No. of copies must be positive"}
+        )
+
     rentals = await user_model.get_user_rentals(db, user_id)
 
     cur_book_rentals = 0
