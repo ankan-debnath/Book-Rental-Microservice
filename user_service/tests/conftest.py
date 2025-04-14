@@ -5,6 +5,14 @@ from app.common.db import get_session
 from app.api.main import app
 from .test_db import init_test_db, get_test_db_session, drop_test_db
 
+from fastapi.testclient import TestClient
+
+from app.api.main import app
+from app.api.main import PORT
+
+client = TestClient(app)
+
+
 # @pytest.mark.asyncio(scope="function")
 @pytest.fixture(scope="module", autouse=True)
 async def setup_db():
