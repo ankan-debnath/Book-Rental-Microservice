@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 import os
 
@@ -26,3 +28,10 @@ async def setup_db():
     yield
 
     await drop_test_db()
+
+
+
+@pytest.fixture(scope="session")
+def get_book_id():
+
+    yield str(uuid.uuid4())

@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from .conftest import client
+from .conftest import client, get_book_id
 from .conftest import PORT
 from unittest import mock
 
@@ -155,7 +155,7 @@ def test_user_patch():
     assert data.get("email", None) == 'demo@example.com'
 
 @mock.patch("app.api.v1.controllers.rent_book.httpx.AsyncClient.patch")
-async def test_user_rent_post(mock_book_rental_response):
+def test_user_rent_post(mock_book_rental_response, get_book_id):
     token_response = client.post(
         url="/token",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -176,7 +176,7 @@ async def test_user_rent_post(mock_book_rental_response):
 
     mock_book_rental_response.return_value = mock_response
 
-    demo_book_id = uuid.uuid4()
+    demo_book_id = get_book_id
 
     #getting the response
     user_response = client.post(
@@ -192,4 +192,45 @@ async def test_user_rent_post(mock_book_rental_response):
     assert content.get("success", False)
     assert content.get("message", None) == 'Book rented successfully'
     assert len(data.get("user_id", "")) == 36
-    assert len(data.get("book_id", "")) == 36
+    assert data.get("book_id", "") == demo_book_id
+
+
+@mock.patch("app.api.v1.controllers.return_book.httpx.AsyncClient.patch")
+def test_user_return_post(mock_book_return_response, get_book_id):
+    token_response = client.post(
+        url="/token",
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        data={
+            "username": "demo@example.com",
+            "password": "new_demo_password"
+        }
+    )
+    assert token_response.status_code == 200
+    access_token = token_response.json()["access_token"]
+
+    # print(access_token)
+
+    mock_response = mock.Mock(status_code=200)
+    mock_response.json.return_value = {"success": True, "message": "Book returned successfully"}
+    mock_response.raise_for_status.return_value = None
+
+    mock_book_return_response.return_value = mock_response
+
+    demo_book_id = get_book_id
+
+    # getting the response
+    user_response = client.post(
+        f"/v1/user/me/return/2/{demo_book_id}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    content = user_response.json()
+    data = content.get("data", {})
+
+    assert user_response.status_code == 200
+    assert content.get("success", False)
+    assert content.get("message", None) == 'Book returned successfully'
+    assert len(data.get("user_id", "")) == 36
+    assert data.get("book_id", "") == demo_book_id
+
+
