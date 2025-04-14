@@ -64,3 +64,23 @@ def test_book_put(get_book):
     assert data.get("available_copies", "") == 5
     assert data.get("book_id", "") == get_book.book_id
 
+def test_book_patch(get_book):
+    response = client.patch(
+        f"/v1/books/{get_book.book_id}",
+        json={
+            "name": "The Pragmatic Programmer",
+            "available_copies": 1
+        }
+    )
+    assert response.status_code == 200
+
+    content = response.json()
+    data = content.get("data", {})
+
+    assert content.get("success", False)
+    assert content.get("message", None) == 'Details updated successfully'
+    assert data.get("name", "") == 'The Pragmatic Programmer'
+    assert data.get("author", "") == get_book.author
+    assert data.get("genre", "") == get_book.genre
+    assert data.get("available_copies", "") == 1
+    assert data.get("book_id", "") == get_book.book_id
