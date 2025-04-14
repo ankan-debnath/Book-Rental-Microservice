@@ -5,19 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a3a241e-0a7c-45fa-bbf3-3ff991a4fa40" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/book_service/app/auth/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book_service/app/auth/dependencies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book_service/tests/1_book_post_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/.env" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/book_service/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/app/api/v1/routes/book_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/app/api/v1/routes/book_routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/app/common/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/app/common/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/db/book.db" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/db/book.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/.env" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/app/api/v1/controllers/rent_book.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/api/v1/controllers/rent_book.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/app/api/v1/controllers/return_book.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/api/v1/controllers/return_book.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/app/common/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/common/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/db/user.db" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/db/user.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/app/auth/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/app/auth/dependencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/test.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/tests/test_book_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/tests/test_book_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

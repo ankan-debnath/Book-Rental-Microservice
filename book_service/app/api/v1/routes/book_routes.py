@@ -20,6 +20,7 @@ router = APIRouter(prefix="/books")
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_book(
         request: CreateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     book = await controllers.create_book(session, request)
@@ -32,6 +33,7 @@ async def create_book(
 @router.get("/{book_id}")
 async def get_book(
         book_id: uuid.UUID,
+    authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     book = await controllers.get_book(session, book_id)
@@ -58,6 +60,7 @@ async def delete_book(
 async def update_book(
         book_id: uuid.UUID,
         request: CreateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     updated_book = await controllers.update_book(session, book_id, request)
@@ -73,6 +76,7 @@ async def update_book(
 async def update_book(
         book_id: uuid.UUID,
         request: UpdateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     updated_book = await controllers.update_book(session, book_id, request)

@@ -19,6 +19,9 @@ async def update_book(db: AsyncSession, book_id: uuid.UUID,
     if not update_details:
         raise NoDataToUpdateException
 
+    if "available_copies" in update_details and update_details["available_copies"] <= 0:
+        raise NegativeAvailabilityException(book_id)
+
     updated_book = await book_model.update_book(db, book_id, update_details)
 
     if updated_book == 0:
