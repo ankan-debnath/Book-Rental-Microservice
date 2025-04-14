@@ -28,8 +28,8 @@ async def setup_db():
     await drop_test_db()
 
 
-@pytest.fixture(scope="module")
-async def get_book_id():
+@pytest.fixture(scope="function")
+async def get_book():
     async with TestingSessionLocal() as session:
         book = BookModel(
             name="Test Book",
@@ -40,4 +40,9 @@ async def get_book_id():
         session.add(book)
         await session.commit()
         await session.refresh(book)
-        yield book.book_id
+
+        yield book
+
+        await session.delete(book)
+        await session.commit()
+
