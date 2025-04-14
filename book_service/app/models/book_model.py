@@ -25,6 +25,9 @@ class BookModel(ORMBase):
     __table_args__ = (
         CheckConstraint('available_copies >= 0', name='check_price_non_negative'),
     )
+    __mapper_args__ = {
+        "confirm_deleted_rows": False
+    }
 
 async def create_book(db: AsyncSession, book_details: dict) -> BookModel:
     statement = (

@@ -84,3 +84,17 @@ def test_book_patch(get_book):
     assert data.get("genre", "") == get_book.genre
     assert data.get("available_copies", "") == 1
     assert data.get("book_id", "") == get_book.book_id
+
+def test_book_delete(get_book):
+    response = client.delete(
+        f"/v1/books/{get_book.book_id}"
+    )
+    assert response.status_code == 200
+
+    content = response.json()
+
+    assert content.get("success", False)
+    assert content.get("message", None) == 'Book deleted successfully'
+    assert not content.get("data", True)
+
+
