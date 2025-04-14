@@ -147,7 +147,6 @@ def test_user_put():
     assert data.get("name", None) == 'new_demo'
     assert data.get("email", None) == 'new_demo@example.com'
 
-
 def test_user_patch():
     token_response = client.post(
         url="/token",

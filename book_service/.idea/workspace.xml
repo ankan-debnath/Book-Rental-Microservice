@@ -5,16 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e57d07f-4292-4582-9b79-ac19bf061f1d" name="Changes" comment="done">
-      <change afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pytest.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_book_servoce.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/book.db" beforeDir="false" afterPath="$PROJECT_DIR$/db/book.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../user_service/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../user_service/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../user_service/.idea/user_service.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../user_service/.idea/user_service.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../user_service/db/user.db" beforeDir="false" afterPath="$PROJECT_DIR$/../user_service/db/user.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../user_service/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../user_service/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user_service/test.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user_service/tests/test_user_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../user_service/tests/test_user_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,11 +47,15 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/ankan_debnath/Desktop/Project/book-rental-microservice/user_service"
+    "git-widget-placeholder": "testing",
+    "last_opened_file_path": "C:/Users/ankan_debnath/Desktop/Project/book-rental-microservice/book_service/tests"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ankan_debnath\Desktop\Project\book-rental-microservice\book_service\tests" />
+      <recent name="C:\Users\ankan_debnath\Desktop\Project\book-rental-microservice\book_service" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Ankan Debnath\Projects\Book Rental Microservice\book_service\app\api" />
       <recent name="C:\Ankan Debnath\Projects\Book Rental Microservice\book_service" />
