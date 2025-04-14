@@ -83,6 +83,35 @@ def test_user_get():
     assert data.get("name", None) == "demo_user"
     assert data.get("email", None) == "demo@example.com"
 
+
+@pytest.mark.parametrize(
+    "username, password",
+    [
+        ("invalid_user@example.com", "invalid_password"),
+        ("demo@example.com", "invalid_password"),
+        ("invalid_user@example.com", "demo_password"),
+    ],
+    ids=["invalid_user", "valid_user/invalid_password", "invalid_user/valid_password"]
+)
+def test_unauthorized_user(username, password):
+    token_response = client.post(
+        url="/token",
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        data={
+            "username": username,
+            "password": password
+        }
+    )
+
+    assert token_response.status_code == 401
+
+    content = token_response.json()
+
+    data = content.get("detail", {})
+
+    assert data.get('success', True) == False
+    assert data.get('message', "") == 'Could not validate credentials'
+
 def test_user_put():
     token_response = client.post(
         url="/token",
@@ -233,4 +262,29 @@ def test_user_return_post(mock_book_return_response, get_book_id):
     assert len(data.get("user_id", "")) == 36
     assert data.get("book_id", "") == demo_book_id
 
+def test_user_delete():
+    token_response = client.post(
+        url="/token",
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        data={
+            "username": "demo@example.com",
+            "password": "new_demo_password"
+        }
+    )
+    assert token_response.status_code == 200
+    access_token = token_response.json()["access_token"]
 
+
+    user_response = client.delete(
+        f"/v1/user/me",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    assert user_response.status_code == 200
+
+    content = user_response.json()
+    data = content.get("data", {})
+
+    assert content.get("success", False)
+    assert content.get("message", None) == 'User deleted successfully'
+    assert not data
