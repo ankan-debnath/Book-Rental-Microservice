@@ -43,7 +43,10 @@ async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, 
     try:
         async with httpx.AsyncClient() as client:
             response = await client.patch(
-                f"{BOOKS_URI}/return/{copies}/{book_id}"
+                f"{BOOKS_URI}/return/{copies}/{book_id}",
+                headers={
+                    "Service-Token": settings.API_KEY
+                }
             )
             response.raise_for_status()
         data = response.json()
@@ -69,7 +72,12 @@ async def return_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, 
         # Step 3: If DB update fails, revert PATCH to restore book state
         try:
             async with httpx.AsyncClient() as client:
-                revert_response = await client.patch(f"{BOOKS_URI}/rent/{copies}/{book_id}")
+                revert_response = await client.patch(
+                    f"{BOOKS_URI}/rent/{copies}/{book_id}",
+                    headers={
+                        "Service-Token": settings.API_KEY
+                    }
+                )
                 revert_response.raise_for_status()
 
         except httpx.HTTPError as revert_err:

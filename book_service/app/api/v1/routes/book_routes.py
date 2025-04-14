@@ -13,6 +13,7 @@ from app.schemas.books_schema import (
 from app.common.db import get_session
 from app.api.v1 import controllers
 from app.schemas.books_schema import BookSchema
+from app.auth.dependencies import verify_token
 
 router = APIRouter(prefix="/books")
 
@@ -86,6 +87,7 @@ async def update_book(
 async def rent_book(
         book_id: uuid.UUID,
         copies:int,
+        authorize: bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
 
@@ -104,6 +106,7 @@ async def rent_book(
 async def return_book(
         book_id: uuid.UUID,
         copies:int,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
 

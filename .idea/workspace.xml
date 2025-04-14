@@ -5,16 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a3a241e-0a7c-45fa-bbf3-3ff991a4fa40" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book_service/app/auth/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book_service/app/auth/dependencies.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/.env" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/book_service/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book_service/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/.idea/user_service.iml" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/.idea/user_service.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/app/api/v1/routes/book_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/app/api/v1/routes/book_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/app/common/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/app/common/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_service/db/book.db" beforeDir="false" afterPath="$PROJECT_DIR$/book_service/db/book.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_service/.env" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_service/app/api/v1/controllers/rent_book.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/api/v1/controllers/rent_book.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_service/app/api/v1/controllers/return_book.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/api/v1/controllers/return_book.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_service/app/common/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/app/common/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user_service/db/user.db" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/db/user.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user_service/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/user_service/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +27,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2vgoUQKod2WrB5nzsX6tFIQj7JZ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -37,8 +40,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/ankan_debnath/Desktop/Project/book-rental-microservice/book_service"
+    "git-widget-placeholder": "testing",
+    "last_opened_file_path": "C:/Users/ankan_debnath/Desktop/Project/book-rental-microservice/user_service"
   }
 }]]></component>
   <component name="SharedIndexes">

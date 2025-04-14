@@ -20,12 +20,17 @@ async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, co
     try:
         async with httpx.AsyncClient() as client:
             response = await client.patch(
-                f"{BOOKS_URI}/rent/{copies}/{book_id}"
+                f"{BOOKS_URI}/rent/{copies}/{book_id}",
+                headers={
+                    "Service-Token": settings.API_KEY
+                }
             )
             response.raise_for_status()
         data = response.json()
 
     except httpx.HTTPStatusError as exc:
+        # if exc.response.status_code == 403:
+        #
         if exc.response.status_code == 409:
             raise BookNotAvailableException(book_id)  # book is not available
         elif exc.response.status_code == 404:
@@ -46,7 +51,12 @@ async def rent_book(db: AsyncSession, user_id: uuid.UUID, book_id: uuid.UUID, co
         # Step 3: If DB update fails, revert PATCH to restore book state
         try:
             async with httpx.AsyncClient() as client:
-                revert_response = await client.patch(f"{BOOKS_URI}/return/{copies}/{book_id}")
+                revert_response = await client.patch(
+                    f"{BOOKS_URI}/return/{copies}/{book_id}",
+                    headers={
+                        "Service-Token": settings.API_KEY
+                    }
+                )
                 revert_response.raise_for_status()
 
         except httpx.HTTPError as revert_err:
