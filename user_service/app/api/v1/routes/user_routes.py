@@ -120,7 +120,7 @@ async def delete_user(
 
 @router.post("/{user_id}/rent/{copies}/{book_id}")
 async def rent_book(
-        user_id: uuid.UUID,
+        user_id: str,
         book_id: uuid.UUID,
         copies: int,
         cur_user: UserModel = Depends(get_current_user),
@@ -145,7 +145,7 @@ async def rent_book(
 
 @router.post("/{user_id}/return/{copies}/{book_id}")
 async def rent_book(
-        user_id: uuid.UUID,
+        user_id: str,
         book_id: uuid.UUID,
         copies: int,
         cur_user: UserModel = Depends(get_current_user),

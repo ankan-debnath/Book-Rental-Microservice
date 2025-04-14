@@ -36,7 +36,7 @@ class GetUserRequest(BaseSchema):
     user_id: uuid.UUID = Field(min_length=36, max_length=36)
 
 class RentalSchema(BaseSchema):
-    user_id: uuid.UUID
+    user_id: str
     book_id: uuid.UUID
 
 class ErrorResponse(BaseModel):
