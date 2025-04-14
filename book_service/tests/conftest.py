@@ -4,7 +4,8 @@ import pytest
 import os
 
 from app.common.db import get_session
-from .test_db import init_test_db, get_test_db_session, drop_test_db
+from app.models import BookModel
+from .test_db import init_test_db, get_test_db_session, drop_test_db, TestingSessionLocal
 
 from fastapi.testclient import TestClient
 
@@ -27,8 +28,16 @@ async def setup_db():
     await drop_test_db()
 
 
-
-@pytest.fixture(scope="session")
-def get_book_id():
-
-    yield str(uuid.uuid4())
+@pytest.fixture(scope="module")
+async def get_book_id():
+    async with TestingSessionLocal() as session:
+        book = BookModel(
+            name="Test Book",
+            author="Jane Doe",
+            genre="Sci-Fi",
+            available_copies=5
+        )
+        session.add(book)
+        await session.commit()
+        await session.refresh(book)
+        yield book.book_id
