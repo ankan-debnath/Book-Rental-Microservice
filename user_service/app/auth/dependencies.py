@@ -30,10 +30,12 @@ async def get_current_user(
 
     try:
         payload = verify_access_token(token)
-        username = payload.get("email")
-        if username is None:
+
+        user_id = payload.get("user_id", None)
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(user_id=user_id)
+
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -44,7 +46,7 @@ async def get_current_user(
         raise credentials_exception
 
     try:
-        user = await user_model.if_user_email_exists(db, str(token_data.username))
+        user = await user_model.if_user_id_exists(db, user_id)
 
         if user is None:
             raise credentials_exception

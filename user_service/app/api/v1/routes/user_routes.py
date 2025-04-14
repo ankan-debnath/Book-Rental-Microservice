@@ -23,10 +23,14 @@ router = APIRouter(prefix="/user")
 
 @router.get("/{user_id}")
 async def get_user(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = user.user_id
+
     if str(user.user_id) != str(user_id):
         raise CredentialsException(
             detail={"success" : False, "message": "User is unauthorized"}

@@ -50,7 +50,7 @@ class Token(BaseModel):
     grant_type: str
 
 class TokenData(BaseModel):
-    username: EmailStr | None = None
+    user_id: str | None = None
 
 
 

@@ -29,7 +29,7 @@ async def create_token(
         raise credentials_exception
 
     if verify_password(form_data.password, user.password):
-        access_token = create_access_token(({ "email" : form_data.username }))
+        access_token = create_access_token(({ "user_id" : user.user_id }))
         return Token(access_token=access_token, grant_type="bearer")
     else:
         raise credentials_exception
