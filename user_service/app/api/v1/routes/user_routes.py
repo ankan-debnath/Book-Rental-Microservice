@@ -46,11 +46,14 @@ async def get_user(
 
 @router.put("/{user_id}")
 async def update_user(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UpdateUserRequest,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 )-> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -67,11 +70,15 @@ async def update_user(
 
 @router.patch("/{user_id}")
 async def update_user_patch(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UpdateUserPatchRequest,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response :
+
+    if user_id == "me":
+        user_id = cur_user.user_id
+
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -90,10 +97,14 @@ async def update_user_patch(
 
 @router.delete("/{user_id}")
 async def delete_user(
-        user_id: uuid.UUID,
+        user_id: str,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
+
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -116,6 +127,9 @@ async def rent_book(
         session: AsyncSession = Depends(get_session)
 ) -> Response:
 
+    if user_id == "me":
+        user_id = cur_user.user_id
+
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
             detail={"success": False, "message": "User is unauthorized"}
@@ -137,6 +151,9 @@ async def rent_book(
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
