@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import router
 from app.auth.auth_routes import router as t_router
@@ -37,6 +38,14 @@ app.add_exception_handler(BookNotAvailableException, book_not_available_for_rent
 app.add_exception_handler(UserServiceException, user_service_exception_handler) # type: ignore
 app.add_exception_handler(InvalidRentalReturnException, invalid_rental_return_exception_handler) # type: ignore
 app.add_exception_handler(BookServiceException, book_service_exception_handler) # type: ignore
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for testing (change in production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, OPTIONS, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 
 PORT = 5000

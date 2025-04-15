@@ -198,6 +198,32 @@ Return one or more copies of a previously rented book.
 
 ---
 
+#### `GET /v1/user/rentals/{user_id}`
+Retrieve all rental records associated with a user.
+
+- **Path Params**:
+  - `user_id` - User ID or use `"me"` to reference the authenticated user
+
+- **Authorization**: Requires Bearer token in headers
+
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Book rented successfully",
+    "data": [
+      {
+        "id": 5,
+        "book_id": "249940aa-4955-4392-b618-a16baa0aaf2a"
+      },
+      {
+        "id": 6,
+        "book_id": "249940aa-4955-4392-b618-a16baa0aaf2a"
+      }
+    ]
+  }
+
+
 ### 🏠 Root Endpoint
 
 #### `GET /`

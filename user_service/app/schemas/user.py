@@ -59,5 +59,9 @@ class BookSchema(BaseSchema):
     genre: str = Field(min_length=1, max_length=50)
     available_copies: int
 
+class RentalResponseSchema(BaseSchema):
+    id: int
+    book_id: str
+
 
 

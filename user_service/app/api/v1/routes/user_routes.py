@@ -13,7 +13,7 @@ from app.schemas.user import (
     UserSchema,
     UpdateUserRequest,
     UpdateUserPatchRequest,
-    Response, RentalSchema, BookSchema
+    Response, RentalSchema, BookSchema, RentalResponseSchema
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -141,6 +141,7 @@ async def get_all_books(
     )
 
 
+
 @router.post("/{user_id}/rent/{copies}/{book_id}")
 async def rent_book(
         user_id: str,
@@ -169,8 +170,8 @@ async def rent_book(
 @router.post("/{user_id}/return/{copies}/{book_id}")
 async def return_book(
         user_id: str,
-        book_id: uuid.UUID,
         copies: int,
+        book_id: uuid.UUID,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
@@ -183,6 +184,7 @@ async def return_book(
             detail={"success": False, "message": "User is unauthorized"}
         )
 
+
     result = await controllers.return_book(session, user_id, book_id, copies)
 
     return Response(
@@ -192,7 +194,28 @@ async def return_book(
     )
 
 
+@router.get("/{user_id}/rentals")
+async def get_rental_details(
+        user_id: str,
+        cur_user: UserModel = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+) -> Response:
 
+    if user_id == "me":
+        user_id = cur_user.user_id
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
+    rentals = await controllers.get_rental_details(session, user_id)
+
+    return Response(
+        success=True,
+        message="Book rented successfully",
+        data=[RentalResponseSchema.model_validate(rental) for rental in rentals]
+    )
 
 
 

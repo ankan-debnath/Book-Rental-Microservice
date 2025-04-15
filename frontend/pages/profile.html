@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile - Book Rental</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 2rem;
+    }
+
+    .profile-card {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-card p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .update-button, .logout-button, .nav-button {
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .update-button:hover, .logout-button:hover, .nav-button:hover {
+      background-color: #2980b9;
+    }
+
+    .logout-button {
+      background-color: #e74c3c;
+    }
+
+    .logout-button:hover {
+      background-color: #c0392b;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .button-container button {
+      width: 48%;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>User Profile</h2>
+    <div class="profile-card" id="profileCard">
+      <!-- Profile info will be populated here -->
+    </div>
+
+    <!-- Button container for navigation -->
+    <div class="button-container">
+      <button class="nav-button" onclick="window.location.href='rental_details.html'">View Rental Details</button>
+      <button class="nav-button" onclick="window.location.href='books.html'">Browse All Books</button>
+    </div>
+
+    <button class="update-button" onclick="location.href='update_user.html'">Update User Info</button>
+    <button class="logout-button" onclick="logout()">Logout</button>
+  </main>
+
+  <script src="../js/profile.js"></script>
+</body>
+</html>

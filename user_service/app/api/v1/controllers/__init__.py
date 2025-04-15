@@ -6,3 +6,4 @@ from .delete_user import delete_user
 from .rent_book import rent_book
 from .return_book import return_book
 from .get_all_books import get_all_books
+from .get_rental_details import get_rental_details

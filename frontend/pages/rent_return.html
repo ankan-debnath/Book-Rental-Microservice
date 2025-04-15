@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rent or Return Book</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eef3f7;
+    }
+
+    main {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      color: #34495e;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input, button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background-color: #2980b9;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2471a3;
+    }
+
+    #response {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>Rent or Return a Book</h2>
+    <form id="rentReturnForm">
+      <input type="text" id="bookId" placeholder="Enter Book ID" required>
+      <input type="number" id="copies" placeholder="Number of copies" min="1" required>
+      <button type="button" onclick="rentBook()">Rent Book</button>
+      <button type="button" onclick="returnBook()">Return Book</button>
+      <div id="response"></div>
+    </form>
+  </main>
+
+  <script src="../js/rent_return.js"></script>
+</body>
+</html>

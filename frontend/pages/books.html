@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Books - Book Rental</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    #bookList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .book-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.25rem;
+      color: #2c3e50;
+    }
+
+    .book-card p {
+      margin: 0.25rem 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .book-card button {
+      padding: 0.5rem 1rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .book-card button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>All Books</h2>
+    <div id="bookList"></div>
+  </main>
+
+  <script src="../js/books.js"></script>
+</body>
+</html>
