@@ -52,6 +52,12 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: str | None = None
 
+class BookSchema(BaseSchema):
+    book_id: uuid.UUID
+    name: str = Field(min_length=1, max_length=100)
+    author: str = Field(min_length=1, max_length=100)
+    genre: str = Field(min_length=1, max_length=50)
+    available_copies: int
 
 
 

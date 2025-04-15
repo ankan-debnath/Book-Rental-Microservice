@@ -13,7 +13,7 @@ from app.schemas.user import (
     UserSchema,
     UpdateUserRequest,
     UpdateUserPatchRequest,
-    Response, RentalSchema
+    Response, RentalSchema, BookSchema
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -117,6 +117,29 @@ async def delete_user(
         success=True,
         message="User deleted successfully"
     )
+
+@router.get("/{user_id}/books/all")
+async def get_all_books(
+        user_id: str,
+        cur_user: UserModel = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+):
+    if user_id == "me":
+        user_id = cur_user.user_id
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
+    books = await controllers.get_all_books()
+
+    return Response(
+        success=True,
+        message="Book returned successfully",
+        data=[BookSchema.model_validate(book) for book in books]
+    )
+
 
 @router.post("/{user_id}/rent/{copies}/{book_id}")
 async def rent_book(
