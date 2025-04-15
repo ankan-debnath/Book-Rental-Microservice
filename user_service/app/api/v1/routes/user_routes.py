@@ -144,7 +144,7 @@ async def rent_book(
     )
 
 @router.post("/{user_id}/return/{copies}/{book_id}")
-async def rent_book(
+async def return_book(
         user_id: str,
         book_id: uuid.UUID,
         copies: int,

@@ -24,7 +24,7 @@ from app.exceptions.handlers import (
     invalid_rental_return_exception_handler
 )
 
-app = FastAPI()
+app = FastAPI(title="Book Rental Microservice")
 
 app.include_router(router)
 app.include_router(t_router)
