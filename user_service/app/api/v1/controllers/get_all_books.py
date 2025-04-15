@@ -26,13 +26,6 @@ async def get_all_books():
         return data.get("data", [])
 
     except httpx.HTTPStatusError as exc:
-        # # if exc.response.status_code == 403:
-        # #
-        # if exc.response.status_code == 409:
-        #     raise BookNotAvailableException(book_id)  # book is not available
-        # elif exc.response.status_code == 404:
-        #     raise BookNotFoundException(book_id)
-        # else:
             raise BookServiceException(f"Book service error: {exc.response.status_code}")
 
     except httpx.HTTPError as e:

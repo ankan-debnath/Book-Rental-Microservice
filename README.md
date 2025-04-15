@@ -147,6 +147,35 @@ Delete a user account.
 
 ### 📖 Book Rental Operations
 
+---
+
+#### `GET /v1/user/{user_id}/books/all`
+Get a list of all books available in the system.
+
+- **Path Params**:
+  - `user_id` - User ID or use `"me"` to reference the authenticated user
+
+- **Authorization**: Requires Bearer token in headers
+
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Book returned successfully",
+    "data": [
+      {
+        "book_id": "string",
+        "name": "string",
+        "author": "string",
+        "genre": "string",
+        "available_copies": 0
+      },
+      ...
+    ]
+  }
+
+---
+
 #### `POST /v1/user/{user_id}/rent/{copies}/{book_id}`
 Rent one or more copies of a book.
 
