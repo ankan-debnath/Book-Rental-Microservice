@@ -158,3 +158,29 @@ async def get_all_books(db: AsyncSession) -> Sequence[BookModel]:
         await db.rollback()
         raise
 
+async def get_books_with_ids(db: AsyncSession, ids: list[uuid.UUID]) -> list[BookModel]:
+    books: list[BookModel] = []
+    try:
+        for book_id in ids:
+            statement = (
+                select(BookModel)
+                .where(BookModel.book_id == str(book_id))
+            )
+            result = await db.execute(statement)
+            book = result.scalars().first()
+            await db.commit()
+            if  book:
+                books.append(book)
+
+        for book in books:
+            await db.refresh(book)
+
+
+        return books
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+
+

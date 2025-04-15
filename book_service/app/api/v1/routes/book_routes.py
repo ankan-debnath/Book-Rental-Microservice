@@ -8,7 +8,7 @@ from app.exceptions.custom_exceptions import NegativeAvailabilityException
 from app.schemas.books_schema import (
     CreateBookRequest,
     UpdateBookRequest,
-    Response
+    Response, BookListRequest
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -40,9 +40,25 @@ async def get_all_books(
 
     return Response(
         success=True,
-        message="Book fetched successfully.",
+        message="Books fetched successfully.",
         data=[BookSchema.model_validate(book) for book in books]
     )
+
+
+@router.post("/list")
+async def get_books_list(
+        request: BookListRequest,
+        # authorize:bool = Depends(verify_token),
+        session: AsyncSession = Depends(get_session)
+):
+    books = await controllers.get_books_list(session, request.book_ids)
+
+    return Response(
+        success=True,
+        message="Books fetched successfully.",
+        data=[BookSchema.model_validate(book) for book in books]
+    )
+
 
 
 @router.get("/{book_id}")
