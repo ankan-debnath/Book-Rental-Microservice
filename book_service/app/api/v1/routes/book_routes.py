@@ -30,10 +30,25 @@ async def create_book(
         data=BookSchema.model_validate(book)
     )
 
+
+@router.get("/all")
+async def get_all_books(
+        authorize:bool = Depends(verify_token),
+        session: AsyncSession = Depends(get_session)
+):
+    books = await controllers.get_all_books(session)
+
+    return Response(
+        success=True,
+        message="Book fetched successfully.",
+        data=[BookSchema.model_validate(book) for book in books]
+    )
+
+
 @router.get("/{book_id}")
 async def get_book(
         book_id: uuid.UUID,
-    authorize:bool = Depends(verify_token),
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     book = await controllers.get_book(session, book_id)

@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,11 +8,8 @@ from app.models.book_model import BookModel
 from app.models import book_model
 
 
-async def get_book(db: AsyncSession, book_id: uuid.UUID) -> BookModel | None:
+async def get_all_books(db: AsyncSession) -> Sequence[BookModel]:
 
-    book = await book_model.get_book(db, book_id)
-
-    if not book:
-        raise BookNotFoundException(book_id)
+    book = await book_model.get_all_books(db)
 
     return book

@@ -1,5 +1,7 @@
 import sqlite3
 import uuid
+from collections.abc import Sequence
+
 from sqlalchemy import String, CheckConstraint
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.orm import Mapped, mapped_column
@@ -139,3 +141,20 @@ async def update_availability(db: AsyncSession, book_id: uuid.UUID, copies:int) 
         raise
 
     return updated_book
+
+async def get_all_books(db: AsyncSession) -> Sequence[BookModel]:
+    statement = select(BookModel)
+
+    try:
+        result = await db.execute(statement)
+        book_list = result.scalars().all()
+
+        await db.commit()
+        for book in book_list:
+            await db.refresh(book)
+        return book_list
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
