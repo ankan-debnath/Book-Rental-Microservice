@@ -210,7 +210,6 @@ async def get_rental_details(
         )
 
     rentals = await controllers.get_rental_details(session, user_id)
-    print(rentals)
 
     return Response(
         success=True,
