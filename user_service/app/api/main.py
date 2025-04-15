@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import router
 from app.auth.auth_routes import router as t_router
+from app.common.settings import settings
 
 from app.exceptions.custom_exceptions import (
     UserAlreadyExistsException,
@@ -48,7 +49,7 @@ app.add_middleware(
 )
 
 
-PORT = 5000
+PORT = settings.PORT
 
 @app.get("/")
 def index():
