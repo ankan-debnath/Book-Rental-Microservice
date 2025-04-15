@@ -210,11 +210,12 @@ async def get_rental_details(
         )
 
     rentals = await controllers.get_rental_details(session, user_id)
+    print(rentals)
 
     return Response(
         success=True,
         message="Book rented successfully",
-        data=[RentalResponseSchema.model_validate(rental) for rental in rentals]
+        data= rentals
     )
 
 

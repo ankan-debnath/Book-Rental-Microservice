@@ -52,11 +52,12 @@ async def get_books_list(
         session: AsyncSession = Depends(get_session)
 ):
     books = await controllers.get_books_list(session, request.book_ids)
+    data = { book.book_id : { **(BookSchema.model_validate(book)).model_dump()} for book in books }
 
     return Response(
         success=True,
         message="Books fetched successfully.",
-        data=[BookSchema.model_validate(book) for book in books]
+        data=data
     )
 
 
