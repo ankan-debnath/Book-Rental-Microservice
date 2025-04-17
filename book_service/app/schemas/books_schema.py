@@ -29,6 +29,9 @@ class BookSchema(CreateBookRequest):
     book_id: uuid.UUID
 
 
+class BookListRequest(BaseSchema):
+    book_ids: list[uuid.UUID]
+
 
 class ErrorResponse(BaseModel):
     success: bool

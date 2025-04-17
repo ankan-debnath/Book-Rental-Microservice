@@ -13,7 +13,7 @@ from app.schemas.user import (
     UserSchema,
     UpdateUserRequest,
     UpdateUserPatchRequest,
-    Response, RentalSchema
+    Response, RentalSchema, BookSchema, RentalResponseSchema
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
@@ -23,10 +23,14 @@ router = APIRouter(prefix="/user")
 
 @router.get("/{user_id}")
 async def get_user(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = user.user_id
+
     if str(user.user_id) != str(user_id):
         raise CredentialsException(
             detail={"success" : False, "message": "User is unauthorized"}
@@ -42,11 +46,14 @@ async def get_user(
 
 @router.put("/{user_id}")
 async def update_user(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UpdateUserRequest,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 )-> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -63,11 +70,15 @@ async def update_user(
 
 @router.patch("/{user_id}")
 async def update_user_patch(
-        user_id: uuid.UUID,
+        user_id: str,
         user: UpdateUserPatchRequest,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response :
+
+    if user_id == "me":
+        user_id = cur_user.user_id
+
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -86,10 +97,14 @@ async def update_user_patch(
 
 @router.delete("/{user_id}")
 async def delete_user(
-        user_id: uuid.UUID,
+        user_id: str,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
+
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -103,14 +118,41 @@ async def delete_user(
         message="User deleted successfully"
     )
 
-@router.post("/{user_id}/rent/{copies}/{book_id}")
+@router.get("/{user_id}/books/all")
+async def get_all_books(
+        user_id: str,
+        cur_user: UserModel = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+):
+    if user_id == "me":
+        user_id = cur_user.user_id
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
+    books = await controllers.get_all_books()
+
+    return Response(
+        success=True,
+        message="Book returned successfully",
+        data=[BookSchema.model_validate(book) for book in books]
+    )
+
+
+
+@router.post("/{user_id}/rent/{book_id}/{copies}")
 async def rent_book(
-        user_id: uuid.UUID,
+        user_id: str,
         book_id: uuid.UUID,
         copies: int,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
@@ -125,19 +167,23 @@ async def rent_book(
         data=RentalSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
     )
 
-@router.post("/{user_id}/return/{copies}/{book_id}")
-async def rent_book(
-        user_id: uuid.UUID,
-        book_id: uuid.UUID,
+@router.post("/{user_id}/return/{book_id}/{copies}")
+async def return_book(
+        user_id: str,
         copies: int,
+        book_id: uuid.UUID,
         cur_user: UserModel = Depends(get_current_user),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
+
+    if user_id == "me":
+        user_id = cur_user.user_id
 
     if str(user_id) != str(cur_user.user_id):
         raise CredentialsException(
             detail={"success": False, "message": "User is unauthorized"}
         )
+
 
     result = await controllers.return_book(session, user_id, book_id, copies)
 
@@ -148,7 +194,28 @@ async def rent_book(
     )
 
 
+@router.get("/{user_id}/rentals")
+async def get_rental_details(
+        user_id: str,
+        cur_user: UserModel = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+) -> Response:
 
+    if user_id == "me":
+        user_id = cur_user.user_id
+
+    if str(user_id) != str(cur_user.user_id):
+        raise CredentialsException(
+            detail={"success": False, "message": "User is unauthorized"}
+        )
+
+    rentals = await controllers.get_rental_details(session, user_id)
+
+    return Response(
+        success=True,
+        message="Book rented successfully",
+        data= rentals
+    )
 
 
 

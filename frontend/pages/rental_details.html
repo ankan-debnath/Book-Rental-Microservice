@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rental Details</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2d3436;
+      margin-bottom: 2rem;
+    }
+
+    .rental-list {
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .rental-item {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e1e4e8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rental-item:last-child {
+      border-bottom: none;
+    }
+
+    .return-btn {
+      padding: 0.5rem 1rem;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .return-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>Your Rental History</h2>
+    <div class="rental-list" id="rentalList">
+      <!-- Rental details will appear here -->
+    </div>
+  </main>
+
+  <script src="../js/rental_details.js"></script>
+</body>
+</html>

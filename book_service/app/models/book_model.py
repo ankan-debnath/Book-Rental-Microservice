@@ -1,5 +1,7 @@
 import sqlite3
 import uuid
+from collections.abc import Sequence
+
 from sqlalchemy import String, CheckConstraint
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.orm import Mapped, mapped_column
@@ -25,6 +27,9 @@ class BookModel(ORMBase):
     __table_args__ = (
         CheckConstraint('available_copies >= 0', name='check_price_non_negative'),
     )
+    __mapper_args__ = {
+        "confirm_deleted_rows": False
+    }
 
 async def create_book(db: AsyncSession, book_details: dict) -> BookModel:
     statement = (
@@ -136,3 +141,46 @@ async def update_availability(db: AsyncSession, book_id: uuid.UUID, copies:int) 
         raise
 
     return updated_book
+
+async def get_all_books(db: AsyncSession) -> Sequence[BookModel]:
+    statement = select(BookModel)
+
+    try:
+        result = await db.execute(statement)
+        book_list = result.scalars().all()
+
+        await db.commit()
+        for book in book_list:
+            await db.refresh(book)
+        return book_list
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+async def get_books_with_ids(db: AsyncSession, ids: list[uuid.UUID]) -> list[BookModel]:
+    books: list[BookModel] = []
+    try:
+        for book_id in ids:
+            statement = (
+                select(BookModel)
+                .where(BookModel.book_id == str(book_id))
+            )
+            result = await db.execute(statement)
+            book = result.scalars().first()
+            await db.commit()
+            if  book:
+                books.append(book)
+
+        for book in books:
+            await db.refresh(book)
+
+
+        return books
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+
+
+

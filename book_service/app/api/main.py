@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.v1.routes import router
+from app.common.settings import settings
 from app.exceptions.custom_exceptions import (
     BookNotFoundException,
     NoDataToUpdateException,
@@ -20,7 +21,8 @@ app.add_exception_handler(BookNotFoundException, book_not_found_exception_handle
 app.add_exception_handler(NoDataToUpdateException, no_data_to_update_exception)     # type: ignore
 app.add_exception_handler(NegativeAvailabilityException, negative_availability_exception)     # type: ignore
 
+PORT = settings.PORT
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="info")

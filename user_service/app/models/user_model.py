@@ -213,3 +213,30 @@ async def get_user_rentals(db: AsyncSession, user_id: uuid.UUID) -> List[RentalM
         return None
     except sqlite3.OperationalError:
         raise
+
+
+
+
+async def get_rental_details(db: AsyncSession, user_id: uuid.UUID) ->  Mapped[list[RentalModel]]:
+    try:
+        result = await db.execute(
+            select(UserModel)
+            .options(selectinload(UserModel.rentals))
+            .where(UserModel.user_id == str(user_id))
+        )
+        user = result.scalars().first()
+
+        rentals = user.rentals
+
+        await db.commit()
+        await db.refresh(user)
+
+        for r in rentals:
+            await db.refresh(r)
+
+        return rentals
+
+    except sqlite3.OperationalError:
+        await db.rollback()
+        raise
+

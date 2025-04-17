@@ -1,7 +1,10 @@
 from fastapi import FastAPI
+from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import router
 from app.auth.auth_routes import router as t_router
+from app.common.settings import settings
 
 from app.exceptions.custom_exceptions import (
     UserAlreadyExistsException,
@@ -23,7 +26,7 @@ from app.exceptions.handlers import (
     invalid_rental_return_exception_handler
 )
 
-app = FastAPI()
+app = FastAPI(title="Book Rental Microservice")
 
 app.include_router(router)
 app.include_router(t_router)
@@ -37,7 +40,25 @@ app.add_exception_handler(UserServiceException, user_service_exception_handler) 
 app.add_exception_handler(InvalidRentalReturnException, invalid_rental_return_exception_handler) # type: ignore
 app.add_exception_handler(BookServiceException, book_service_exception_handler) # type: ignore
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for testing (change in production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, OPTIONS, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
+
+PORT = settings.PORT
+
+@app.get("/")
+def index():
+    return JSONResponse(
+        status_code=200,
+        content=f"Server is running at port {PORT}"
+    )
+
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5000, log_level="info")
+    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="info")

@@ -64,6 +64,6 @@ class InvalidRentalReturnException(CustomException):
 class CredentialsException(HTTPException):
 
     def __init__(self, detail):
-        self.status_code = status.HTTP_401_UNAUTHORIZED
+        self.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         self.detail = detail
         self.headers = {"WWW-Authenticate": "Bearer"}

@@ -36,7 +36,7 @@ class GetUserRequest(BaseSchema):
     user_id: uuid.UUID = Field(min_length=36, max_length=36)
 
 class RentalSchema(BaseSchema):
-    user_id: uuid.UUID
+    user_id: str
     book_id: uuid.UUID
 
 class ErrorResponse(BaseModel):
@@ -50,8 +50,18 @@ class Token(BaseModel):
     grant_type: str
 
 class TokenData(BaseModel):
-    username: EmailStr | None = None
+    user_id: str | None = None
 
+class BookSchema(BaseSchema):
+    book_id: uuid.UUID
+    name: str = Field(min_length=1, max_length=100)
+    author: str = Field(min_length=1, max_length=100)
+    genre: str = Field(min_length=1, max_length=50)
+    available_copies: int
+
+class RentalResponseSchema(BaseSchema):
+    id: int
+    book_id: str
 
 
 

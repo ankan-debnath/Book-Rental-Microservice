@@ -8,17 +8,19 @@ from app.exceptions.custom_exceptions import NegativeAvailabilityException
 from app.schemas.books_schema import (
     CreateBookRequest,
     UpdateBookRequest,
-    Response
+    Response, BookListRequest
 )
 from app.common.db import get_session
 from app.api.v1 import controllers
 from app.schemas.books_schema import BookSchema
+from app.auth.dependencies import verify_token
 
 router = APIRouter(prefix="/books")
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_book(
         request: CreateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     book = await controllers.create_book(session, request)
@@ -28,9 +30,42 @@ async def create_book(
         data=BookSchema.model_validate(book)
     )
 
+
+@router.get("/all")
+async def get_all_books(
+        # authorize:bool = Depends(verify_token),
+        session: AsyncSession = Depends(get_session)
+):
+    books = await controllers.get_all_books(session)
+
+    return Response(
+        success=True,
+        message="Books fetched successfully.",
+        data=[BookSchema.model_validate(book) for book in books]
+    )
+
+
+@router.post("/list")
+async def get_books_list(
+        request: BookListRequest,
+        # authorize:bool = Depends(verify_token),
+        session: AsyncSession = Depends(get_session)
+):
+    books = await controllers.get_books_list(session, request.book_ids)
+    data = { book.book_id : { **(BookSchema.model_validate(book)).model_dump()} for book in books }
+
+    return Response(
+        success=True,
+        message="Books fetched successfully.",
+        data=data
+    )
+
+
+
 @router.get("/{book_id}")
 async def get_book(
         book_id: uuid.UUID,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     book = await controllers.get_book(session, book_id)
@@ -57,6 +92,7 @@ async def delete_book(
 async def update_book(
         book_id: uuid.UUID,
         request: CreateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     updated_book = await controllers.update_book(session, book_id, request)
@@ -72,6 +108,7 @@ async def update_book(
 async def update_book(
         book_id: uuid.UUID,
         request: UpdateBookRequest,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
     updated_book = await controllers.update_book(session, book_id, request)
@@ -86,6 +123,7 @@ async def update_book(
 async def rent_book(
         book_id: uuid.UUID,
         copies:int,
+        authorize: bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
 
@@ -104,6 +142,7 @@ async def rent_book(
 async def return_book(
         book_id: uuid.UUID,
         copies:int,
+        authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ) -> Response:
 
