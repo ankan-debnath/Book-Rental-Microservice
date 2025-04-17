@@ -85,7 +85,6 @@ __pycache__/
 
 # Ignore SQLite DB files
 *.sqlite3
-**/*.db
 
 # Ignore pytest cache (usually in .pytest_cache)
 **/.pytest_cache/
