@@ -142,7 +142,7 @@ async def get_all_books(
 
 
 
-@router.post("/{user_id}/rent/{copies}/{book_id}")
+@router.post("/{user_id}/rent/{book_id}/{copies}")
 async def rent_book(
         user_id: str,
         book_id: uuid.UUID,
@@ -167,7 +167,7 @@ async def rent_book(
         data=RentalSchema.model_validate({"user_id" : user_id, "book_id" : book_id})
     )
 
-@router.post("/{user_id}/return/{copies}/{book_id}")
+@router.post("/{user_id}/return/{book_id}/{copies}")
 async def return_book(
         user_id: str,
         copies: int,

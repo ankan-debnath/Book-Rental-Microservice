@@ -33,7 +33,7 @@ async def create_book(
 
 @router.get("/all")
 async def get_all_books(
-        authorize:bool = Depends(verify_token),
+        # authorize:bool = Depends(verify_token),
         session: AsyncSession = Depends(get_session)
 ):
     books = await controllers.get_all_books(session)

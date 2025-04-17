@@ -14,7 +14,7 @@ router = APIRouter(prefix="/token")
 @router.post("")
 async def create_token(
     db : AsyncSession = Depends(get_session),
-    form_data: OAuth2PasswordRequestForm = Depends()
+    form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm)
 ) -> Token :
 
     credentials_exception = HTTPException(

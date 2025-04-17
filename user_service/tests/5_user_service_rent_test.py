@@ -13,7 +13,7 @@ from unittest import mock
 )
 def test_patch_route_authentication(get_book_id, token, output):
     user_response = client.post(
-        f"/v1/user/me/rent/2/{get_book_id}",
+        f"/v1/user/me/rent/{get_book_id}/2",
         headers={"Authorization": f"Bearer {token}"} if token else None
     )
 
@@ -32,7 +32,7 @@ def test_patch_route_authentication(get_book_id, token, output):
 )
 def test_patch_route_authentication(get_book_id, token, output):
     user_response = client.post(
-        f"/v1/user/me/return/2/{get_book_id}",
+        f"/v1/user/me/return/{get_book_id}/2",
         headers={"Authorization": f"Bearer {token}"} if token else None
     )
 
@@ -60,7 +60,7 @@ def test_user_rent_invalid_copies(get_book_id, copies):
     access_token = token_response.json()["access_token"]
 
     user_response = client.post(
-        f"/v1/user/me/rent/{copies}/{get_book_id}",
+        f"/v1/user/me/rent/{get_book_id}/{copies}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -98,7 +98,7 @@ def test_user_rent_post(mock_book_rental_response, get_book_id):
 
     #getting the response
     user_response = client.post(
-        f"/v1/user/me/rent/2/{get_book_id}",
+        f"/v1/user/me/rent/{get_book_id}/2",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -131,7 +131,7 @@ def test_user_return_invalid_copies(get_book_id, copies):
     access_token = token_response.json()["access_token"]
 
     user_response = client.post(
-        f"/v1/user/me/return/{copies}/{get_book_id}",
+        f"/v1/user/me/return/{get_book_id}/{copies}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -162,7 +162,7 @@ def test_user_return_excess(get_book_id, copies):
     access_token = token_response.json()["access_token"]
 
     user_response = client.post(
-        f"/v1/user/me/return/{copies}/{get_book_id}",
+        f"/v1/user/me/return/{get_book_id}/{copies}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -198,7 +198,7 @@ def test_user_return_post(mock_book_return_response, get_book_id):
 
     # getting the response
     user_response = client.post(
-        f"/v1/user/me/return/2/{get_book_id}",
+        f"/v1/user/me/return/{get_book_id}/2",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 

@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const user = result.data;
     card.innerHTML = `
       <p><strong>User ID:</strong> ${user.user_id}</p>
-      <p><strong>Username:</strong> ${user.name}</p>
+      <p><strong>Name:</strong> ${user.name}</p>
       <p><strong>Email:</strong> ${user.email}</p>
     `;
   } else {

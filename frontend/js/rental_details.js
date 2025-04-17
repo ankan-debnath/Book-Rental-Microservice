@@ -66,7 +66,7 @@ async function returnBook(rentalId, bookId) {
   }
 
   try {
-    const res = await fetch(`http://127.0.0.1:5000/v1/user/me/return/1/${bookId}`, {
+    const res = await fetch(`http://127.0.0.1:5000/v1/user/me/return/${bookId}/1`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

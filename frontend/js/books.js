@@ -69,7 +69,7 @@ async function rentBook(bookId, copies) {
       }
 
   try {
-    const res = await fetch(`http://127.0.0.1:5000/v1/user/me/rent/${copies}/${bookId}`, {
+    const res = await fetch(`http://127.0.0.1:5000/v1/user/me/rent/${bookId}/${copies}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
