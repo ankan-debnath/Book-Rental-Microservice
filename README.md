@@ -40,7 +40,28 @@ cd user_service
 uv venv .venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 uv pip install -e .  
+alembic upgrade head
 python -m  app.api.main
+```
+#### .env file format
+```doctest
+# SQLite database for user service
+DB_URL=sqlite+aiosqlite:///db/user.db
+
+# URL of the Book Service (used to fetch book data)
+BOOK_SERVICE_URI=http://127.0.0.1:8000/v1/books
+
+# JWT Authentication configuration
+SECRET_KEY=super-secret-key              # Secret used for signing JWTs
+ALGORITHM=HS256                          # Algorithm used to sign the tokens
+ACCESS_TOKEN_EXPIRE_MINUTES=30           # Access token expiry duration
+
+# Application port (used when running the user service locally)
+PORT=5000
+
+# Internal API key (used for service-to-service authentication)
+API_KEY=secret-key
+
 ```
 
 #### Book Service
@@ -48,16 +69,31 @@ python -m  app.api.main
 cd book_service
 uv venv .venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+alembic upgrade head
 uv pip install -e .  
 python -m  app.api.main
 ```
+#### .env file format
+```doctest
+# SQLite database for book service
+DB_URL=sqlite+aiosqlite:///db/book.db
 
+# Internal API key used for service-to-service authentication
+SERVICE_KEY="secret-key"
 
+# Port the Book Service will run on
+PORT=8000
+
+```
 ---
+
+### Final Command to run the app
+```commandline
+python -m http.server 5500 # runnig frontend at port 5500
+```
 
 ## 🧩 User & Rental Service Endpoints
 
-### base url : http://127.0.0.1:5000
 
 ### 🔐 Authentication
 
