@@ -1,3 +1,7 @@
+const API_URL = import.meta.env.API_URL;
+console.log(API_URL)
+  
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("access_token");
   if (!token) {

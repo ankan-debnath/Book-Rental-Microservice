@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.API_URL;
+
 window.onload = async function () {
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -7,7 +9,7 @@ window.onload = async function () {
   }
 
   try {
-    const res = await fetch("http://127.0.0.1:5000/v1/user/me/books/all", {
+    const res = await fetch(`${API_URL}/v1/user/me/books/all`, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Accept": "application/json"

@@ -10,7 +10,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     formData.append("password", password);  // Password field
 
     // Make a POST request to /token with form-encoded data
-    const response = await fetch("http://127.0.0.1:5000/token", {
+    const response = await fetch(`http://127.0.0.1:5000/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",  // We are sending form-encoded data

@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -8,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch all books
   try {
-    const response = await fetch("http://127.0.0.1:5000/v1/user/me/books/all", {
+    const response = await fetch(`http://127.0.0.1:5000/v1/user/me/books/all`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
